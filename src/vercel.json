@@ -1,74 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/",
-      "dest": "/",
-      "children": [
-        {
-          "index": true,
-          "element": "Home"
-        },
-        {
-          "path": "login",
-          "element": {
-            "component": "AuthLayout",
-            "props": {
-              "authentication": false,
-              "child": "Login"
-            }
-          }
-        },
-        {
-          "path": "signup",
-          "element": {
-            "component": "AuthLayout",
-            "props": {
-              "authentication": false,
-              "child": "Signup"
-            }
-          }
-        },
-        {
-          "path": "all-posts",
-          "element": {
-            "component": "AuthLayout",
-            "props": {
-              "authentication": true,
-              "child": "AllPosts"
-            }
-          }
-        },
-        {
-          "path": "add-post",
-          "element": {
-            "component": "AuthLayout",
-            "props": {
-              "authentication": true,
-              "child": "AddPost"
-            }
-          }
-        },
-        {
-          "path": "/edit-post/:slug",
-          "element": {
-            "component": "AuthLayout",
-            "props": {
-              "authentication": true,
-              "child": "EditPost"
-            }
-          }
-        },
-        {
-          "path": "/post/:slug",
-          "element": "Post"
-        },
-        {
-          "path": "*",
-          "element": {
-            "redirectTo": "/"
-          }
-        }
-      ]
+      "source": "/(.*)",
+      "destination": "/"
     }
   ]
 }
