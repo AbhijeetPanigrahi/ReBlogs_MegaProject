@@ -161,41 +161,84 @@ export default function PostForm({ post }) {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
 
+  // const submit = async (data) => {
+  //   console.log("Submit called with data:", data); // Debugging line
+  //   if (userData) {
+  //     if (post) {
+  //       const file = data.image[0]
+  //         ? await appwriteService.uploadFile(data.image[0])
+  //         : null;
+
+  //       if (file) {
+  //         appwriteService.deleteFile(post.featuredImage);
+  //       }
+
+  //       const dbPost = await appwriteService.updatePost(post.$id, {
+  //         ...data,
+  //         featuredImage: file ? file.$id : undefined,
+  //       });
+
+  //       if (dbPost) {
+  //         navigate(`/post/${dbPost.$id}`);
+  //       }
+  //     } else {
+  //       const file = await appwriteService.uploadFile(data.image[0]);
+
+  //       if (file) {
+  //         const fileId = file.$id;
+  //         data.featuredImage = fileId;
+  //         const dbPost = await appwriteService.createPost({
+  //           ...data,
+  //           userId: userData.$id,
+  //         });
+
+  //         if (dbPost) {
+  //           navigate(`/post/${dbPost.$id}`);
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
   const submit = async (data) => {
-    if (userData) {
-      if (post) {
-        const file = data.image[0]
-          ? await appwriteService.uploadFile(data.image[0])
-          : null;
+    console.log("Submit called with data:", data); // Check the submitted data
+    try {
+      if (userData) {
+        if (post) {
+          const file = data.image[0]
+            ? await appwriteService.uploadFile(data.image[0])
+            : null;
 
-        if (file) {
-          appwriteService.deleteFile(post.featuredImage);
-        }
+          if (file) {
+            await appwriteService.deleteFile(post.featuredImage);
+          }
 
-        const dbPost = await appwriteService.updatePost(post.$id, {
-          ...data,
-          featuredImage: file ? file.$id : undefined,
-        });
-
-        if (dbPost) {
-          navigate(`/post/${dbPost.$id}`);
-        }
-      } else {
-        const file = await appwriteService.uploadFile(data.image[0]);
-
-        if (file) {
-          const fileId = file.$id;
-          data.featuredImage = fileId;
-          const dbPost = await appwriteService.createPost({
+          const dbPost = await appwriteService.updatePost(post.$id, {
             ...data,
-            userId: userData.$id,
+            featuredImage: file ? file.$id : undefined,
           });
 
           if (dbPost) {
             navigate(`/post/${dbPost.$id}`);
           }
+        } else {
+          const file = await appwriteService.uploadFile(data.image[0]);
+
+          if (file) {
+            const fileId = file.$id;
+            data.featuredImage = fileId;
+            const dbPost = await appwriteService.createPost({
+              ...data,
+              userId: userData.$id,
+            });
+
+            if (dbPost) {
+              navigate(`/post/${dbPost.$id}`);
+            }
+          }
         }
       }
+    } catch (error) {
+      console.error("Error during submission:", error); // Log the error
     }
   };
 
@@ -268,12 +311,22 @@ export default function PostForm({ post }) {
             />
           </div>
         )}
-        <Select
+        {/* <Select
           options={["active", "inactive"]}
           label="Status"
           className="mb-4 border-black w-full"
           {...register("status", { required: true })}
+        /> */}
+        <Select
+          options={[
+            { value: "active", label: "Active" },
+            { value: "inactive", label: "Inactive" },
+          ]}
+          label="Status"
+          className="mb-4 border-black w-full"
+          {...register("status", { required: true })}
         />
+
         <Button
           type="submit"
           bgColor={post ? "bg-green-500" : undefined}
