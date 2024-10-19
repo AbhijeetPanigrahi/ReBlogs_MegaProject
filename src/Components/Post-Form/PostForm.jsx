@@ -221,11 +221,22 @@ export default function PostForm({ post }) {
             navigate(`/post/${dbPost.$id}`);
           }
         } else {
+          console.log(data.image[0]);
           const file = await appwriteService.uploadFile(data.image[0]);
 
           if (file) {
             const fileId = file.$id;
             data.featuredImage = fileId;
+            const dbPost = await appwriteService.createPost({
+              ...data,
+              userId: userData.$id,
+            });
+
+            if (dbPost) {
+              navigate(`/post/${dbPost.$id}`);
+            }
+          } else {
+            data.featuredImage = "";
             const dbPost = await appwriteService.createPost({
               ...data,
               userId: userData.$id,
@@ -300,7 +311,7 @@ export default function PostForm({ post }) {
           type="file"
           className="mb-4 border-black w-full"
           accept="image/png, image/jpg, image/jpeg, image/gif"
-          {...register("image", { required: !post })}
+          {...register("image")}
         />
         {post && (
           <div className="w-full mb-4">
